@@ -4,7 +4,7 @@ from PIL import Image
 import io
 
 app = Flask(__name__)
-model = YOLO("./my_model/my_model.pt")
+model = YOLO("./my_model.pt")
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
 @app.post("/image")
