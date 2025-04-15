@@ -7,6 +7,18 @@ app = Flask(__name__)
 model = YOLO("./my_model.pt")
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
+@app.post("/image-json")
+def pest_detection_json():
+    
+    file = request.files['file']
+    img = Image.open(file)
+    results = model([img])  # results list
+    result = results[0].to_json()
+
+    # Retornar la imagen como respuesta HTTP
+    return result
+
+
 @app.post("/image")
 def pest_detection():
     
