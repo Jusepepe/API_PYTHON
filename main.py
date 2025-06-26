@@ -37,4 +37,4 @@ def pest_detection():
     return send_file(buffer, mimetype='image/jpeg', download_name="result.jpg")
 
 if __name__ == "__main__":
-    app.run(port=80, debug=True)
+    app.run(host='0.0.0.0',port=80, debug=True)
