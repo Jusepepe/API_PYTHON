@@ -14,6 +14,9 @@ hour: str = time.strftime("%H:00_%p", time.localtime())
 directories: dict = s3.list_objects_v2(Bucket="citric-bucket", Prefix=day+"/raw/"+hour+"/")
 
 objects: list = directories.get("Contents")
+objects.sort(key=lambda x: x.get("LastModified"))
+
+detections: dict = {}
 
 for object in objects:
     key: str = object.get("Key")
@@ -24,6 +27,7 @@ for object in objects:
     img: Image.Image = Image.open(buffer0)
     results: list = model([img])
     result: Image.Image = results[0].plot()
+    detections[key] = results[0].to_json()
     im_rgb: Image.Image = Image.fromarray(result[..., ::-1])
     buffer1: io.BytesIO = io.BytesIO()
     im_rgb.save(buffer1, format="JPEG")
@@ -31,7 +35,20 @@ for object in objects:
     s3.upload_fileobj(
         Bucket="citric-bucket",
         Key=key.replace("raw", "processed"),
-        Fileobj=buffer1
+        Fileobj=buffer1,
+        ExtraArgs={
+            "ContentType": "image/jpeg",
+            "ContentDisposition":"inline"
+        }
+    )
+    s3.upload_fileobj(
+        Bucket="citric-bucket",
+        Key=key.replace("raw", "detections").replace(".jpg", ".json"),
+        Fileobj=io.BytesIO(detections[key].encode("utf-8")),
+        ExtraArgs={
+            "ContentType": "application/json",
+            "ContentDisposition":"inline"
+        }
     )
     print("Processed")
     

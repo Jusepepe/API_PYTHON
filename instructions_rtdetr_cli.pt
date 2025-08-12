@@ -1,0 +1,4 @@
+#COMMAND
+yolo detect predict model=rtdetr.pt source=image.jpg
+
+Model must include "rtdetr" in the first part of it's name, e.g: rtdetr-custom.pt, rtdetr.pt, rtdetr-anything.pt
