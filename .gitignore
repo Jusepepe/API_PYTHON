@@ -1,0 +1,9 @@
+.env
+__pycache__
+my_model
+model.py
+my_model.zip
+images/
+2025-08-12_raw_10_00_AM_Track_6_back_middle.png
+runs/
+models/
